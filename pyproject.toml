@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "Spanish PVPC P3/valle holidays with strict filtering rules"
 readme = "README.md"
 requires-python = ">=3.10"
-authors = ["privatecoder"]
+authors = [{name = "privatecoder"}]
 dependencies = []
 
 [project.urls]

@@ -19,6 +19,10 @@ FIXED_HOLIDAYS: tuple[tuple[int, int, str], ...] = (
     (11, 1, "Todos los Santos"),
     (12, 6, "Día de la Constitución"),
 )
+NEXT_YEAR_FIXED_HOLIDAYS: tuple[tuple[int, int, str], ...] = (
+    (1, 1, "Año Nuevo"),
+    (1, 6, "Epifanía del Señor"),
+)
 
 HolidaySource = Literal["csv", "python-holidays"]
 
@@ -265,6 +269,7 @@ def select_pvpc_holidays(
     """Apply PVPC rules to parsed holidays."""
     log = _log_or_default(logger)
     selected: dict[date, str] = {}
+    next_year = year + 1
 
     for record in sorted(records, key=lambda item: (item.day, item.description)):
         if record.day.year != year:
@@ -324,8 +329,24 @@ def select_pvpc_holidays(
         selected[fixed_day] = description
         log.info("INCLUDE %s (%s): fixed date added", fixed_day.isoformat(), description)
 
+    for month, day_of_month, description in NEXT_YEAR_FIXED_HOLIDAYS:
+        fixed_day = date(next_year, month, day_of_month)
+        if _is_weekend(fixed_day):
+            log.info(
+                "EXCLUDE %s (%s): next-year fixed date falls on weekend (%s)",
+                fixed_day.isoformat(),
+                description,
+                _weekday_short(fixed_day),
+            )
+            continue
+        if fixed_day in selected:
+            log.info("KEEP %s (%s): next-year fixed date already present", fixed_day.isoformat(), selected[fixed_day])
+            continue
+        selected[fixed_day] = description
+        log.info("INCLUDE %s (%s): next-year fixed date added", fixed_day.isoformat(), description)
+
     final_sorted = dict(sorted(selected.items(), key=lambda item: item[0]))
-    log.info("Final PVPC holiday list (%d entries):", len(final_sorted))
+    log.info("Final PVPC holiday list for %d/%d (%d entries):", year, next_year, len(final_sorted))
     for holiday_day, description in final_sorted.items():
         log.info("  %s - %s", holiday_day.isoformat(), description)
 
@@ -340,6 +361,6 @@ def get_pvpc_holidays(
     timeout: int = 20,
     logger: logging.Logger | None = None,
 ) -> dict[date, str]:
-    """Load holidays from selected source, then apply PVPC filtering rules."""
+    """Load holidays from selected source, apply PVPC rules, and append next-year 01.01/06.01."""
     records = load_holiday_records(year, source=source, csv_url=csv_url, timeout=timeout, logger=logger)
     return select_pvpc_holidays(records, year=year, logger=logger)

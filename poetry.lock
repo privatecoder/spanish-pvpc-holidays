@@ -51,4 +51,4 @@ holidays = ["holidays"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.10,<4.0"
-content-hash = "bdf982e817e4b2ce77c088bf84f45809662bbd4c78a38f85cede4f5e8eddf8ca"
+content-hash = "46dd62a83bccb6b4ea7c0e0e5836aa0c84d053d5c519f60b3605aef680618ea5"

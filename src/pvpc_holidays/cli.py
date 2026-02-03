@@ -52,7 +52,7 @@ def main(argv: list[str] | None = None) -> int:
         log.error("Abort: %s", exc)
         return 1
 
-    print(f"PVPC P3/valle holidays {args.year} ({len(result)} entries):")
+    print(f"PVPC P3/valle holidays {args.year}/{args.year + 1} ({len(result)} entries):")
     for holiday_day, description in result.items():
         print(f"{holiday_day.isoformat()} - {description}")
     return 0

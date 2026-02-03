@@ -25,6 +25,9 @@ class SelectRulesTest(unittest.TestCase):
 
         self.assertEqual(result[date(2024, 11, 1)], "Todos los Santos")
         self.assertEqual(result[date(2024, 12, 6)], "Día de la Constitución")
+        self.assertEqual(result[date(2025, 1, 1)], "Año Nuevo")
+        self.assertEqual(result[date(2025, 1, 6)], "Epifanía del Señor")
+        self.assertEqual(len(result), 6)
 
     def test_parse_maps_name_variants_to_canonical(self) -> None:
         csv_sample = """PROVINCIA,LOCALIDAD,FECHA,TIPO,DESCRIPCION
@@ -39,6 +42,11 @@ class SelectRulesTest(unittest.TestCase):
     def test_invalid_source_raises_error(self) -> None:
         with self.assertRaises(PVPCError):
             load_holiday_records(2026, source="invalid-source")  # type: ignore[arg-type]
+
+    def test_next_year_fixed_days_exclude_weekend(self) -> None:
+        result = select_pvpc_holidays([], year=2021)
+        self.assertNotIn(date(2022, 1, 1), result)  # Saturday
+        self.assertEqual(result[date(2022, 1, 6)], "Epifanía del Señor")
 
 
 if __name__ == "__main__":

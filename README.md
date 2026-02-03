@@ -44,7 +44,10 @@ Art. 7.4:
 6. Add fixed dates if they do not fall on a weekend:
    - `01.11` Todos los Santos
    - `06.12` Día de la Constitución
-7. Log all steps, exclusion reasons, and the final list.
+7. Add the first two fixed holidays for the next year if they do not fall on a weekend:
+   - `01.01` Año Nuevo
+   - `06.01` Epifanía del Señor
+8. Log all steps, exclusion reasons, and the final list.
 
 Name normalization examples:
 - `Epifania del Señor` -> `Epifanía del Señor`
@@ -129,6 +132,9 @@ for day, name in holidays.items():
     print(day, name)
 ```
 
+The returned mapping includes selected holidays for the requested year plus
+next-year `01.01` and `06.01` when those dates are not Saturday/Sunday.
+
 Using `python-holidays` as input source:
 
 ```python
@@ -178,20 +184,26 @@ INFO: INCLUDE 2026-12-08 (Inmaculada Concepción)
 INFO: INCLUDE 2026-12-25 (Natividad del Señor)
 INFO: EXCLUDE 2026-11-01 (Todos los Santos): fixed date falls on weekend (SUN)
 INFO: EXCLUDE 2026-12-06 (Día de la Constitución): fixed date falls on weekend (SUN)
-INFO: Final PVPC holiday list (6 entries):
+INFO: INCLUDE 2027-01-01 (Año Nuevo): next-year fixed date added
+INFO: INCLUDE 2027-01-06 (Epifanía del Señor): next-year fixed date added
+INFO: Final PVPC holiday list for 2026/2027 (8 entries):
 INFO:   2026-01-01 - Año Nuevo
 INFO:   2026-01-06 - Epifanía del Señor
 INFO:   2026-05-01 - Fiesta del Trabajo
 INFO:   2026-10-12 - Fiesta Nacional de España
 INFO:   2026-12-08 - Inmaculada Concepción
 INFO:   2026-12-25 - Natividad del Señor
-PVPC P3/valle holidays 2026 (6 entries):
+INFO:   2027-01-01 - Año Nuevo
+INFO:   2027-01-06 - Epifanía del Señor
+PVPC P3/valle holidays 2026/2027 (8 entries):
 2026-01-01 - Año Nuevo
 2026-01-06 - Epifanía del Señor
 2026-05-01 - Fiesta del Trabajo
 2026-10-12 - Fiesta Nacional de España
 2026-12-08 - Inmaculada Concepción
 2026-12-25 - Natividad del Señor
+2027-01-01 - Año Nuevo
+2027-01-06 - Epifanía del Señor
 ```
 
 python-holidays source (`--source python-holidays`):
@@ -204,6 +216,8 @@ INFO: python-holidays holiday found: 2026-04-03 (Viernes Santo)
 INFO: python-holidays holiday found: 2026-05-01 (Fiesta del Trabajo)
 INFO: python-holidays holiday found: 2026-08-15 (Asunción de la Virgen)
 INFO: python-holidays holiday found: 2026-10-12 (Fiesta Nacional de España)
+INFO: python-holidays holiday found: 2026-11-01 (Todos los Santos)
+INFO: python-holidays holiday found: 2026-12-06 (Día de la Constitución) | mapped_from=Día de la Constitución Española
 INFO: python-holidays holiday found: 2026-12-08 (Inmaculada Concepción)
 INFO: python-holidays holiday found: 2026-12-25 (Natividad del Señor)
 INFO: INCLUDE 2026-01-01 (Año Nuevo)
@@ -216,20 +230,26 @@ INFO: INCLUDE 2026-12-08 (Inmaculada Concepción)
 INFO: INCLUDE 2026-12-25 (Natividad del Señor)
 INFO: EXCLUDE 2026-11-01 (Todos los Santos): fixed date falls on weekend (SUN)
 INFO: EXCLUDE 2026-12-06 (Día de la Constitución): fixed date falls on weekend (SUN)
-INFO: Final PVPC holiday list (6 entries):
+INFO: INCLUDE 2027-01-01 (Año Nuevo): next-year fixed date added
+INFO: INCLUDE 2027-01-06 (Epifanía del Señor): next-year fixed date added
+INFO: Final PVPC holiday list for 2026/2027 (8 entries):
 INFO:   2026-01-01 - Año Nuevo
 INFO:   2026-01-06 - Epifanía del Señor
 INFO:   2026-05-01 - Fiesta del Trabajo
 INFO:   2026-10-12 - Fiesta Nacional de España
 INFO:   2026-12-08 - Inmaculada Concepción
 INFO:   2026-12-25 - Natividad del Señor
-PVPC P3/valle holidays 2026 (6 entries):
+INFO:   2027-01-01 - Año Nuevo
+INFO:   2027-01-06 - Epifanía del Señor
+PVPC P3/valle holidays 2026/2027 (8 entries):
 2026-01-01 - Año Nuevo
 2026-01-06 - Epifanía del Señor
 2026-05-01 - Fiesta del Trabajo
 2026-10-12 - Fiesta Nacional de España
 2026-12-08 - Inmaculada Concepción
 2026-12-25 - Natividad del Señor
+2027-01-01 - Año Nuevo
+2027-01-06 - Epifanía del Señor
 ```
 
 ---
