@@ -1,0 +1,42 @@
+[build-system]
+requires = ["poetry-core>=1.9.0"]
+build-backend = "poetry.core.masonry.api"
+
+[project]
+name = "spanish-pvpc-holidays"
+version = "0.1.0"
+description = "Spanish PVPC P3/valle holidays with strict filtering rules"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "Max Schaefer" }]
+dependencies = []
+
+[project.urls]
+Homepage = "https://www.seg-social.es"
+
+[project.optional-dependencies]
+holidays = ["holidays>=0.55"]
+
+[project.scripts]
+pvpc-holidays = "pvpc_holidays.cli:main"
+
+[tool.poetry]
+name = "spanish-pvpc-holidays"
+version = "0.1.0"
+description = "Spanish PVPC P3/valle holidays with strict filtering rules"
+readme = "README.md"
+authors = ["Max Schaefer"]
+packages = [{ include = "pvpc_holidays", from = "src" }]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<4.0"
+holidays = { version = ">=0.55", optional = true }
+
+[tool.poetry.extras]
+holidays = ["holidays"]
+
+[tool.poetry.scripts]
+pvpc-holidays = "pvpc_holidays.cli:main"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
