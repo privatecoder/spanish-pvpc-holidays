@@ -124,6 +124,8 @@ python -m pvpc_holidays.cli --year 2026 --source csv --log-level INFO
 
 ## Usage in Python
 
+Sync API:
+
 ```python
 from pvpc_holidays import get_pvpc_holidays
 
@@ -135,7 +137,7 @@ for day, name in holidays.items():
 The returned mapping includes selected holidays for the requested year plus
 next-year `01.01` and `06.01` when those dates are not Saturday/Sunday.
 
-Using `python-holidays` as input source:
+Sync API with `python-holidays` as input source:
 
 ```python
 from pvpc_holidays import get_pvpc_holidays
@@ -143,6 +145,40 @@ from pvpc_holidays import get_pvpc_holidays
 holidays = get_pvpc_holidays(2026, source="python-holidays")
 for day, name in holidays.items():
     print(day, name)
+```
+
+Async-safe API (recommended for event-loop environments such as Home Assistant):
+
+```python
+from pvpc_holidays import async_get_pvpc_holidays
+
+holidays = await async_get_pvpc_holidays(2026, source="python-holidays")
+for day, name in holidays.items():
+    print(day, name)
+```
+
+Home Assistant style usage (avoid first-use blocking on the event loop):
+
+```python
+from pvpc_holidays import async_get_pvpc_holidays, async_warmup_source
+
+# optional: warm up once during setup to pre-load imports/metadata/datasets
+await async_warmup_source(2026, source="python-holidays")
+
+# regular fetch
+holidays = await async_get_pvpc_holidays(2026, source="python-holidays")
+```
+
+Warmup helpers (useful to pre-load imports/metadata/data before first real fetch):
+
+```python
+from pvpc_holidays import warmup_source, async_warmup_source
+
+# sync warmup
+warmup_source(2026, source="python-holidays")
+
+# async warmup
+await async_warmup_source(2026, source="python-holidays")
 ```
 
 ---
@@ -163,7 +199,7 @@ To use `python-holidays` as source, set `--source python-holidays`.
 CSV source (`--source csv`):
 
 ```text
-INFO: Holiday source selected: csv
+INFO: Holiday source selected: csv | year=2026 | mode=full
 INFO: Downloading holiday CSV: https://www.seg-social.es/wps/PA_POINCALAB/CalendarioServlet?exportacion=CSV&tipo=2
 INFO: CSV downloaded (387 characters)
 INFO: CSV holiday found: 2026-01-01 (Año Nuevo) | tipo=Nacional | province=- | locality=-
@@ -174,6 +210,7 @@ INFO: CSV holiday found: 2026-08-15 (Asunción de la Virgen) | tipo=Nacional | p
 INFO: CSV holiday found: 2026-10-12 (Fiesta Nacional de España) | tipo=Nacional | province=- | locality=- | mapped_from=Fiesta nacional de España
 INFO: CSV holiday found: 2026-12-08 (Inmaculada Concepción) | tipo=Nacional | province=- | locality=-
 INFO: CSV holiday found: 2026-12-25 (Natividad del Señor) | tipo=Nacional | province=- | locality=-
+INFO: Loaded 8 records from source=csv for year=2026 | mode=full
 INFO: INCLUDE 2026-01-01 (Año Nuevo)
 INFO: INCLUDE 2026-01-06 (Epifanía del Señor)
 INFO: EXCLUDE 2026-04-03 (Viernes Santo): Viernes Santo explicitly excluded (not a fixed date)
@@ -195,6 +232,7 @@ INFO:   2026-12-08 - Inmaculada Concepción
 INFO:   2026-12-25 - Natividad del Señor
 INFO:   2027-01-01 - Año Nuevo
 INFO:   2027-01-06 - Epifanía del Señor
+INFO: Computed PVPC holidays for 2026/2027 from source=csv | warmup=False | final_count=8
 PVPC P3/valle holidays 2026/2027 (8 entries):
 2026-01-01 - Año Nuevo
 2026-01-06 - Epifanía del Señor
@@ -209,7 +247,7 @@ PVPC P3/valle holidays 2026/2027 (8 entries):
 python-holidays source (`--source python-holidays`):
 
 ```text
-INFO: Holiday source selected: python-holidays
+INFO: Holiday source selected: python-holidays | year=2026 | mode=full
 INFO: python-holidays holiday found: 2026-01-01 (Año Nuevo)
 INFO: python-holidays holiday found: 2026-01-06 (Epifanía del Señor)
 INFO: python-holidays holiday found: 2026-04-03 (Viernes Santo)
@@ -220,6 +258,7 @@ INFO: python-holidays holiday found: 2026-11-01 (Todos los Santos)
 INFO: python-holidays holiday found: 2026-12-06 (Día de la Constitución) | mapped_from=Día de la Constitución Española
 INFO: python-holidays holiday found: 2026-12-08 (Inmaculada Concepción)
 INFO: python-holidays holiday found: 2026-12-25 (Natividad del Señor)
+INFO: Loaded 10 records from source=python-holidays for year=2026 | mode=full
 INFO: INCLUDE 2026-01-01 (Año Nuevo)
 INFO: INCLUDE 2026-01-06 (Epifanía del Señor)
 INFO: EXCLUDE 2026-04-03 (Viernes Santo): Viernes Santo explicitly excluded (not a fixed date)
@@ -241,6 +280,7 @@ INFO:   2026-12-08 - Inmaculada Concepción
 INFO:   2026-12-25 - Natividad del Señor
 INFO:   2027-01-01 - Año Nuevo
 INFO:   2027-01-06 - Epifanía del Señor
+INFO: Computed PVPC holidays for 2026/2027 from source=python-holidays | warmup=False | final_count=8
 PVPC P3/valle holidays 2026/2027 (8 entries):
 2026-01-01 - Año Nuevo
 2026-01-06 - Epifanía del Señor
@@ -257,3 +297,4 @@ PVPC P3/valle holidays 2026/2027 (8 entries):
 ## License
 
 MIT License. See the [LICENSE](LICENSE) file.
+Recent changes are listed in [CHANGELOG.md](CHANGELOG.md).

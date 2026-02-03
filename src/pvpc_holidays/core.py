@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import asyncio
 from collections.abc import Iterable
 from dataclasses import dataclass
 from datetime import date, datetime
@@ -248,16 +249,91 @@ def load_holiday_records(
     csv_url: str = DEFAULT_CSV_URL,
     timeout: int = 20,
     logger: logging.Logger | None = None,
+    warmup: bool = False,
 ) -> list[HolidayRecord]:
     """Load holiday records from the selected source."""
     log = _log_or_default(logger)
-    log.info("Holiday source selected: %s", source)
+    mode = "warmup" if warmup else "full"
+    log.info("Holiday source selected: %s | year=%d | mode=%s", source, year, mode)
     if source == "csv":
         csv_text = download_holiday_csv(year, csv_url=csv_url, timeout=timeout, logger=log)
-        return parse_holiday_csv(csv_text, logger=log)
-    if source == "python-holidays":
-        return fetch_python_holidays(year, logger=log)
-    raise PVPCError(f"Unsupported source: {source!r}")
+        records = parse_holiday_csv(csv_text, logger=log)
+    elif source == "python-holidays":
+        records = fetch_python_holidays(year, logger=log)
+    else:
+        raise PVPCError(f"Unsupported source: {source!r}")
+
+    log.info(
+        "Loaded %d records from source=%s for year=%d | mode=%s",
+        len(records),
+        source,
+        year,
+        mode,
+    )
+    return records
+
+
+async def async_load_holiday_records(
+    year: int,
+    *,
+    source: HolidaySource = "csv",
+    csv_url: str = DEFAULT_CSV_URL,
+    timeout: int = 20,
+    logger: logging.Logger | None = None,
+    warmup: bool = False,
+) -> list[HolidayRecord]:
+    """Async-safe wrapper for load_holiday_records, executed in a worker thread."""
+    return await asyncio.to_thread(
+        load_holiday_records,
+        year,
+        source=source,
+        csv_url=csv_url,
+        timeout=timeout,
+        logger=logger,
+        warmup=warmup,
+    )
+
+
+def warmup_source(
+    year: int,
+    *,
+    source: HolidaySource = "csv",
+    csv_url: str = DEFAULT_CSV_URL,
+    timeout: int = 20,
+    logger: logging.Logger | None = None,
+) -> int:
+    """Warm up selected source (import/metadata/dataset loading) and return loaded record count."""
+    log = _log_or_default(logger)
+    records = load_holiday_records(
+        year,
+        source=source,
+        csv_url=csv_url,
+        timeout=timeout,
+        logger=log,
+        warmup=True,
+    )
+    count = len(records)
+    log.info("Warmup completed for source=%s | year=%d | warmup=%s | record_count=%d", source, year, True, count)
+    return count
+
+
+async def async_warmup_source(
+    year: int,
+    *,
+    source: HolidaySource = "csv",
+    csv_url: str = DEFAULT_CSV_URL,
+    timeout: int = 20,
+    logger: logging.Logger | None = None,
+) -> int:
+    """Async-safe warmup helper, executed in a worker thread."""
+    return await asyncio.to_thread(
+        warmup_source,
+        year,
+        source=source,
+        csv_url=csv_url,
+        timeout=timeout,
+        logger=logger,
+    )
 
 
 def select_pvpc_holidays(
@@ -362,5 +438,34 @@ def get_pvpc_holidays(
     logger: logging.Logger | None = None,
 ) -> dict[date, str]:
     """Load holidays from selected source, apply PVPC rules, and append next-year 01.01/06.01."""
-    records = load_holiday_records(year, source=source, csv_url=csv_url, timeout=timeout, logger=logger)
-    return select_pvpc_holidays(records, year=year, logger=logger)
+    log = _log_or_default(logger)
+    records = load_holiday_records(year, source=source, csv_url=csv_url, timeout=timeout, logger=log)
+    result = select_pvpc_holidays(records, year=year, logger=log)
+    log.info(
+        "Computed PVPC holidays for %d/%d from source=%s | warmup=%s | final_count=%d",
+        year,
+        year + 1,
+        source,
+        False,
+        len(result),
+    )
+    return result
+
+
+async def async_get_pvpc_holidays(
+    year: int,
+    *,
+    source: HolidaySource = "csv",
+    csv_url: str = DEFAULT_CSV_URL,
+    timeout: int = 20,
+    logger: logging.Logger | None = None,
+) -> dict[date, str]:
+    """Async-safe wrapper for get_pvpc_holidays, executed in a worker thread."""
+    return await asyncio.to_thread(
+        get_pvpc_holidays,
+        year,
+        source=source,
+        csv_url=csv_url,
+        timeout=timeout,
+        logger=logger,
+    )
