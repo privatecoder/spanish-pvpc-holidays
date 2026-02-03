@@ -14,7 +14,10 @@ import unicodedata
 from urllib.error import URLError
 from urllib.request import Request, urlopen
 
-DEFAULT_CSV_URL = "https://www.seg-social.es/wps/PA_POINCALAB/CalendarioServlet?exportacion=CSV&tipo=2"
+DEFAULT_CSV_URL = (
+    "https://www.seg-social.es/wps/PA_POINCALAB/CalendarioServlet"
+    "?exportacion=CSV&tipo=2"
+)
 
 FIXED_HOLIDAYS: tuple[tuple[int, int, str], ...] = (
     (11, 1, "Todos los Santos"),
@@ -50,6 +53,8 @@ class PVPCError(RuntimeError):
 
 @dataclass(frozen=True, slots=True)
 class HolidayRecord:
+    """Single holiday entry used across source loading and filtering."""
+
     day: date
     description: str
     holiday_type: str
@@ -134,7 +139,9 @@ def _decode_payload(payload: bytes, header_charset: str | None) -> str:
     return payload.decode("utf-8", errors="replace")
 
 
-def parse_holiday_csv(csv_text: str, *, logger: logging.Logger | None = None) -> list[HolidayRecord]:
+def parse_holiday_csv(
+    csv_text: str, *, logger: logging.Logger | None = None
+) -> list[HolidayRecord]:
     """Parse CSV text into HolidayRecord entries."""
     log = _log_or_default(logger)
     records: list[HolidayRecord] = []
@@ -211,7 +218,7 @@ def fetch_python_holidays(
     """Load Spain national holidays for one year from python-holidays."""
     log = _log_or_default(logger)
     try:
-        import holidays  # type: ignore[import-not-found]
+        import holidays  # type: ignore[import-not-found]  # pylint: disable=import-outside-toplevel
     except ModuleNotFoundError as exc:
         raise PVPCError(
             "python-holidays source requested but dependency is missing. "
@@ -242,7 +249,7 @@ def fetch_python_holidays(
     return records
 
 
-def load_holiday_records(
+def load_holiday_records(  # pylint: disable=too-many-arguments
     year: int,
     *,
     source: HolidaySource = "csv",
@@ -273,7 +280,7 @@ def load_holiday_records(
     return records
 
 
-async def async_load_holiday_records(
+async def async_load_holiday_records(  # pylint: disable=too-many-arguments
     year: int,
     *,
     source: HolidaySource = "csv",
@@ -313,7 +320,13 @@ def warmup_source(
         warmup=True,
     )
     count = len(records)
-    log.info("Warmup completed for source=%s | year=%d | warmup=%s | record_count=%d", source, year, True, count)
+    log.info(
+        "Warmup completed for source=%s | year=%d | warmup=%s | record_count=%d",
+        source,
+        year,
+        True,
+        count,
+    )
     return count
 
 
@@ -416,7 +429,11 @@ def select_pvpc_holidays(
             )
             continue
         if fixed_day in selected:
-            log.debug("KEEP %s (%s): next-year fixed date already present", fixed_day.isoformat(), selected[fixed_day])
+            log.debug(
+                "KEEP %s (%s): next-year fixed date already present",
+                fixed_day.isoformat(),
+                selected[fixed_day],
+            )
             continue
         selected[fixed_day] = description
         log.debug("INCLUDE %s (%s): next-year fixed date added", fixed_day.isoformat(), description)
@@ -439,7 +456,13 @@ def get_pvpc_holidays(
 ) -> dict[date, str]:
     """Load holidays from selected source, apply PVPC rules, and append next-year 01.01/06.01."""
     log = _log_or_default(logger)
-    records = load_holiday_records(year, source=source, csv_url=csv_url, timeout=timeout, logger=log)
+    records = load_holiday_records(
+        year,
+        source=source,
+        csv_url=csv_url,
+        timeout=timeout,
+        logger=log,
+    )
     result = select_pvpc_holidays(records, year=year, logger=log)
     log.info(
         "Computed PVPC holidays for %d/%d from source=%s | warmup=%s | final_count=%d",

@@ -11,18 +11,28 @@ from .core import DEFAULT_CSV_URL, PVPCError, get_pvpc_holidays
 
 
 def build_parser() -> argparse.ArgumentParser:
+    """Build and return the CLI argument parser."""
     parser = argparse.ArgumentParser(
         prog="pvpc-holidays",
         description="Calculate Spanish PVPC P3/valle holidays for one year.",
     )
-    parser.add_argument("--year", type=int, default=date.today().year, help="Target year (default: current year)")
+    parser.add_argument(
+        "--year",
+        type=int,
+        default=date.today().year,
+        help="Target year (default: current year)",
+    )
     parser.add_argument(
         "--source",
         choices=["csv", "python-holidays"],
         default="csv",
         help="Holiday source: Seguridad Social CSV or python-holidays",
     )
-    parser.add_argument("--csv-url", default=DEFAULT_CSV_URL, help="CSV URL (optional with {year} placeholder)")
+    parser.add_argument(
+        "--csv-url",
+        default=DEFAULT_CSV_URL,
+        help="CSV URL (optional with {year} placeholder)",
+    )
     parser.add_argument("--timeout", type=int, default=20, help="HTTP timeout in seconds")
     parser.add_argument(
         "--log-level",
@@ -34,6 +44,7 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main(argv: list[str] | None = None) -> int:
+    """Run the CLI entrypoint."""
     parser = build_parser()
     args = parser.parse_args(argv)
 

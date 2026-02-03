@@ -1,3 +1,5 @@
+"""Unit tests for core holiday loading/filtering behavior."""
+
 from datetime import date
 import unittest
 from unittest.mock import patch
@@ -25,7 +27,10 @@ CSV_SAMPLE = """PROVINCIA,LOCALIDAD,FECHA,TIPO,DESCRIPCION
 
 
 class SelectRulesTest(unittest.TestCase):
+    """Tests for selection and normalization rules."""
+
     def test_select_rules_and_fixed_dates(self) -> None:
+        """Apply selection rules and verify fixed-date behavior."""
         records = parse_holiday_csv(CSV_SAMPLE)
         result = select_pvpc_holidays(records, year=2024)
 
@@ -42,6 +47,7 @@ class SelectRulesTest(unittest.TestCase):
         self.assertEqual(len(result), 6)
 
     def test_parse_maps_name_variants_to_canonical(self) -> None:
+        """Map known source name variants to canonical holiday names."""
         csv_sample = """PROVINCIA,LOCALIDAD,FECHA,TIPO,DESCRIPCION
 ,,06-12-2026,Nacional,Día de la Constitución Española
 ,,06-01-2026,Nacional,Epifania del Señor
@@ -52,23 +58,29 @@ class SelectRulesTest(unittest.TestCase):
         self.assertEqual(by_day[date(2026, 1, 6)], "Epifanía del Señor")
 
     def test_invalid_source_raises_error(self) -> None:
+        """Reject unknown source names."""
         with self.assertRaises(PVPCError):
             load_holiday_records(2026, source="invalid-source")  # type: ignore[arg-type]
 
     def test_next_year_fixed_days_exclude_weekend(self) -> None:
+        """Do not add next-year fixed days when they fall on a weekend."""
         result = select_pvpc_holidays([], year=2021)
         self.assertNotIn(date(2022, 1, 1), result)  # Saturday
         self.assertEqual(result[date(2022, 1, 6)], "Epifanía del Señor")
 
 
 class AsyncAndWarmupTest(unittest.IsolatedAsyncioTestCase):
+    """Async wrapper and warmup helper tests."""
+
     async def test_async_get_matches_sync_for_csv_source(self) -> None:
+        """Return exactly the same output as sync API for CSV source."""
         with patch("pvpc_holidays.core.download_holiday_csv", return_value=CSV_SAMPLE):
             sync_result = get_pvpc_holidays(2024, source="csv")
             async_result = await async_get_pvpc_holidays(2024, source="csv")
             self.assertEqual(sync_result, async_result)
 
     async def test_async_get_matches_sync_for_python_holidays_source(self) -> None:
+        """Return exactly the same output as sync API for python-holidays source."""
         source_records = [
             HolidayRecord(date(2026, 1, 1), "Año Nuevo", "Nacional", "", ""),
             HolidayRecord(date(2026, 1, 6), "Epifanía del Señor", "Nacional", "", ""),
@@ -87,6 +99,7 @@ class AsyncAndWarmupTest(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(sync_result, async_result)
 
     async def test_async_load_holiday_records_matches_sync(self) -> None:
+        """Load-records async wrapper matches sync loader output."""
         source_records = [HolidayRecord(date(2026, 1, 1), "Año Nuevo", "Nacional", "", "")]
         with patch("pvpc_holidays.core.fetch_python_holidays", return_value=source_records):
             sync_records = load_holiday_records(2026, source="python-holidays")
@@ -94,6 +107,7 @@ class AsyncAndWarmupTest(unittest.IsolatedAsyncioTestCase):
             self.assertEqual(sync_records, async_records)
 
     async def test_warmup_helpers_are_repeatable(self) -> None:
+        """Warmup helpers are idempotent-ish across repeated calls."""
         source_records = [
             HolidayRecord(date(2026, 1, 1), "Año Nuevo", "Nacional", "", ""),
             HolidayRecord(date(2026, 1, 6), "Epifanía del Señor", "Nacional", "", ""),
