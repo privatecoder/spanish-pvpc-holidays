@@ -104,7 +104,7 @@ def download_holiday_csv(
         },
     )
 
-    log.info("Downloading holiday CSV: %s", resolved_url)
+    log.debug("Downloading holiday CSV: %s", resolved_url)
     try:
         with urlopen(request, timeout=timeout) as response:
             payload = response.read()
@@ -114,7 +114,7 @@ def download_holiday_csv(
         raise PVPCError("CSV download failed") from exc
 
     content = _decode_payload(payload, charset)
-    log.info("CSV downloaded (%d characters)", len(content))
+    log.debug("CSV downloaded (%d characters)", len(content))
     return content
 
 
@@ -177,7 +177,7 @@ def parse_holiday_csv(csv_text: str, *, logger: logging.Logger | None = None) ->
         message = "CSV holiday found: %s (%s) | tipo=%s | province=%s | locality=%s"
         if record.description != source_description:
             message += " | mapped_from=%s"
-            log.info(
+            log.debug(
                 message,
                 record.day.isoformat(),
                 record.description,
@@ -187,7 +187,7 @@ def parse_holiday_csv(csv_text: str, *, logger: logging.Logger | None = None) ->
                 source_description,
             )
             continue
-        log.info(
+        log.debug(
             message,
             record.day.isoformat(),
             record.description,
@@ -233,9 +233,9 @@ def fetch_python_holidays(
         message = "python-holidays holiday found: %s (%s)"
         if description != str(source_description):
             message += " | mapped_from=%s"
-            log.info(message, holiday_day.isoformat(), description, source_description)
+            log.debug(message, holiday_day.isoformat(), description, source_description)
             continue
-        log.info(message, holiday_day.isoformat(), description)
+        log.debug(message, holiday_day.isoformat(), description)
 
     if not records:
         raise PVPCError(f"No holidays found from python-holidays for year {year}")
@@ -263,7 +263,7 @@ def load_holiday_records(
     else:
         raise PVPCError(f"Unsupported source: {source!r}")
 
-    log.info(
+    log.debug(
         "Loaded %d records from source=%s for year=%d | mode=%s",
         len(records),
         source,
@@ -349,7 +349,7 @@ def select_pvpc_holidays(
 
     for record in sorted(records, key=lambda item: (item.day, item.description)):
         if record.day.year != year:
-            log.info(
+            log.debug(
                 "EXCLUDE %s (%s): different year (%d instead of %d)",
                 record.day.isoformat(),
                 record.description,
@@ -359,7 +359,7 @@ def select_pvpc_holidays(
             continue
 
         if _is_weekend(record.day):
-            log.info(
+            log.debug(
                 "EXCLUDE %s (%s): weekend (%s)",
                 record.day.isoformat(),
                 record.description,
@@ -368,7 +368,7 @@ def select_pvpc_holidays(
             continue
 
         if _normalize(record.description) == "viernes santo":
-            log.info(
+            log.debug(
                 "EXCLUDE %s (%s): Viernes Santo explicitly excluded (not a fixed date)",
                 record.day.isoformat(),
                 record.description,
@@ -376,7 +376,7 @@ def select_pvpc_holidays(
             continue
 
         if record.day in selected:
-            log.info(
+            log.debug(
                 "EXCLUDE %s (%s): duplicate, date already present as %s",
                 record.day.isoformat(),
                 record.description,
@@ -385,12 +385,12 @@ def select_pvpc_holidays(
             continue
 
         selected[record.day] = record.description
-        log.info("INCLUDE %s (%s)", record.day.isoformat(), record.description)
+        log.debug("INCLUDE %s (%s)", record.day.isoformat(), record.description)
 
     for month, day_of_month, description in FIXED_HOLIDAYS:
         fixed_day = date(year, month, day_of_month)
         if _is_weekend(fixed_day):
-            log.info(
+            log.debug(
                 "EXCLUDE %s (%s): fixed date falls on weekend (%s)",
                 fixed_day.isoformat(),
                 description,
@@ -399,16 +399,16 @@ def select_pvpc_holidays(
             continue
 
         if fixed_day in selected:
-            log.info("KEEP %s (%s): already present", fixed_day.isoformat(), selected[fixed_day])
+            log.debug("KEEP %s (%s): already present", fixed_day.isoformat(), selected[fixed_day])
             continue
 
         selected[fixed_day] = description
-        log.info("INCLUDE %s (%s): fixed date added", fixed_day.isoformat(), description)
+        log.debug("INCLUDE %s (%s): fixed date added", fixed_day.isoformat(), description)
 
     for month, day_of_month, description in NEXT_YEAR_FIXED_HOLIDAYS:
         fixed_day = date(next_year, month, day_of_month)
         if _is_weekend(fixed_day):
-            log.info(
+            log.debug(
                 "EXCLUDE %s (%s): next-year fixed date falls on weekend (%s)",
                 fixed_day.isoformat(),
                 description,
@@ -416,15 +416,15 @@ def select_pvpc_holidays(
             )
             continue
         if fixed_day in selected:
-            log.info("KEEP %s (%s): next-year fixed date already present", fixed_day.isoformat(), selected[fixed_day])
+            log.debug("KEEP %s (%s): next-year fixed date already present", fixed_day.isoformat(), selected[fixed_day])
             continue
         selected[fixed_day] = description
-        log.info("INCLUDE %s (%s): next-year fixed date added", fixed_day.isoformat(), description)
+        log.debug("INCLUDE %s (%s): next-year fixed date added", fixed_day.isoformat(), description)
 
     final_sorted = dict(sorted(selected.items(), key=lambda item: item[0]))
-    log.info("Final PVPC holiday list for %d/%d (%d entries):", year, next_year, len(final_sorted))
+    log.debug("Final PVPC holiday list for %d/%d (%d entries):", year, next_year, len(final_sorted))
     for holiday_day, description in final_sorted.items():
-        log.info("  %s - %s", holiday_day.isoformat(), description)
+        log.debug("  %s - %s", holiday_day.isoformat(), description)
 
     return final_sorted
 
