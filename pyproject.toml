@@ -8,7 +8,7 @@ version = "1.0.0"
 description = "Spanish PVPC P3/valle holidays with strict filtering rules"
 readme = "README.md"
 requires-python = ">=3.10"
-authors = [{ name = "Max Schaefer" }]
+authors = ["privatecoder"]
 dependencies = []
 
 [project.urls]
@@ -25,7 +25,7 @@ name = "spanish-pvpc-holidays"
 version = "1.0.0"
 description = "Spanish PVPC P3/valle holidays with strict filtering rules"
 readme = "README.md"
-authors = ["Max Schaefer"]
+authors = ["privatecoder"]
 packages = [{ include = "pvpc_holidays", from = "src" }]
 
 [tool.poetry.dependencies]
