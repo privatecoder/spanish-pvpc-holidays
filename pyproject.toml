@@ -4,7 +4,7 @@ build-backend = "poetry.core.masonry.api"
 
 [project]
 name = "spanish-pvpc-holidays"
-version = "1.0.0"
+version = "1.1.0"
 description = "Spanish PVPC P3/valle holidays with strict filtering rules"
 readme = "README.md"
 requires-python = ">=3.10"
@@ -22,7 +22,7 @@ pvpc-holidays = "pvpc_holidays.cli:main"
 
 [tool.poetry]
 name = "spanish-pvpc-holidays"
-version = "1.0.0"
+version = "1.1.0"
 description = "Spanish PVPC P3/valle holidays with strict filtering rules"
 readme = "README.md"
 authors = ["privatecoder"]
