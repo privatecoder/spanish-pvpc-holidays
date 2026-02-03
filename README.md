@@ -76,13 +76,13 @@ poetry install -E holidays
 Run the CLI:
 
 ```bash
-poetry run pvpc-holidays --year 2026 --source csv --log-level INFO
+poetry run pvpc-holidays --year 2026 --source csv --log-level DEBUG
 ```
 
 Run the CLI with `python-holidays` as source:
 
 ```bash
-poetry run pvpc-holidays --year 2026 --source python-holidays --log-level INFO
+poetry run pvpc-holidays --year 2026 --source python-holidays --log-level DEBUG
 ```
 
 ### Option B: `venv` + `pip` (editable install)
@@ -105,19 +105,19 @@ python -m pip install -e ".[holidays]"
 Run the CLI:
 
 ```bash
-pvpc-holidays --year 2026 --source csv --log-level INFO
+pvpc-holidays --year 2026 --source csv --log-level DEBUG
 ```
 
 Run the CLI with `python-holidays` as source:
 
 ```bash
-pvpc-holidays --year 2026 --source python-holidays --log-level INFO
+pvpc-holidays --year 2026 --source python-holidays --log-level DEBUG
 ```
 
 If the script is not found in your shell, use the module entry point:
 
 ```bash
-python -m pvpc_holidays.cli --year 2026 --source csv --log-level INFO
+python -m pvpc_holidays.cli --year 2026 --source csv --log-level DEBUG
 ```
 
 ---
@@ -186,7 +186,7 @@ await async_warmup_source(2026, source="python-holidays")
 ## CLI
 
 ```bash
-pvpc-holidays --year 2026 --source csv --log-level INFO
+pvpc-holidays --year 2026 --source csv --log-level DEBUG
 ```
 
 Optionally, `--csv-url` can include a `{year}` placeholder.
@@ -200,38 +200,38 @@ CSV source (`--source csv`):
 
 ```text
 INFO: Holiday source selected: csv | year=2026 | mode=full
-INFO: Downloading holiday CSV: https://www.seg-social.es/wps/PA_POINCALAB/CalendarioServlet?exportacion=CSV&tipo=2
-INFO: CSV downloaded (387 characters)
-INFO: CSV holiday found: 2026-01-01 (Año Nuevo) | tipo=Nacional | province=- | locality=-
-INFO: CSV holiday found: 2026-01-06 (Epifanía del Señor) | tipo=Nacional | province=- | locality=- | mapped_from=Epifania del Señor
-INFO: CSV holiday found: 2026-04-03 (Viernes Santo) | tipo=Nacional | province=- | locality=-
-INFO: CSV holiday found: 2026-05-01 (Fiesta del Trabajo) | tipo=Nacional | province=- | locality=- | mapped_from=Fiesta del trabajo
-INFO: CSV holiday found: 2026-08-15 (Asunción de la Virgen) | tipo=Nacional | province=- | locality=-
-INFO: CSV holiday found: 2026-10-12 (Fiesta Nacional de España) | tipo=Nacional | province=- | locality=- | mapped_from=Fiesta nacional de España
-INFO: CSV holiday found: 2026-12-08 (Inmaculada Concepción) | tipo=Nacional | province=- | locality=-
-INFO: CSV holiday found: 2026-12-25 (Natividad del Señor) | tipo=Nacional | province=- | locality=-
-INFO: Loaded 8 records from source=csv for year=2026 | mode=full
-INFO: INCLUDE 2026-01-01 (Año Nuevo)
-INFO: INCLUDE 2026-01-06 (Epifanía del Señor)
-INFO: EXCLUDE 2026-04-03 (Viernes Santo): Viernes Santo explicitly excluded (not a fixed date)
-INFO: INCLUDE 2026-05-01 (Fiesta del Trabajo)
-INFO: EXCLUDE 2026-08-15 (Asunción de la Virgen): weekend (SAT)
-INFO: INCLUDE 2026-10-12 (Fiesta Nacional de España)
-INFO: INCLUDE 2026-12-08 (Inmaculada Concepción)
-INFO: INCLUDE 2026-12-25 (Natividad del Señor)
-INFO: EXCLUDE 2026-11-01 (Todos los Santos): fixed date falls on weekend (SUN)
-INFO: EXCLUDE 2026-12-06 (Día de la Constitución): fixed date falls on weekend (SUN)
-INFO: INCLUDE 2027-01-01 (Año Nuevo): next-year fixed date added
-INFO: INCLUDE 2027-01-06 (Epifanía del Señor): next-year fixed date added
-INFO: Final PVPC holiday list for 2026/2027 (8 entries):
-INFO:   2026-01-01 - Año Nuevo
-INFO:   2026-01-06 - Epifanía del Señor
-INFO:   2026-05-01 - Fiesta del Trabajo
-INFO:   2026-10-12 - Fiesta Nacional de España
-INFO:   2026-12-08 - Inmaculada Concepción
-INFO:   2026-12-25 - Natividad del Señor
-INFO:   2027-01-01 - Año Nuevo
-INFO:   2027-01-06 - Epifanía del Señor
+DEBUG: Downloading holiday CSV: https://www.seg-social.es/wps/PA_POINCALAB/CalendarioServlet?exportacion=CSV&tipo=2
+DEBUG: CSV downloaded (387 characters)
+DEBUG: CSV holiday found: 2026-01-01 (Año Nuevo) | tipo=Nacional | province=- | locality=-
+DEBUG: CSV holiday found: 2026-01-06 (Epifanía del Señor) | tipo=Nacional | province=- | locality=- | mapped_from=Epifania del Señor
+DEBUG: CSV holiday found: 2026-04-03 (Viernes Santo) | tipo=Nacional | province=- | locality=-
+DEBUG: CSV holiday found: 2026-05-01 (Fiesta del Trabajo) | tipo=Nacional | province=- | locality=- | mapped_from=Fiesta del trabajo
+DEBUG: CSV holiday found: 2026-08-15 (Asunción de la Virgen) | tipo=Nacional | province=- | locality=-
+DEBUG: CSV holiday found: 2026-10-12 (Fiesta Nacional de España) | tipo=Nacional | province=- | locality=- | mapped_from=Fiesta nacional de España
+DEBUG: CSV holiday found: 2026-12-08 (Inmaculada Concepción) | tipo=Nacional | province=- | locality=-
+DEBUG: CSV holiday found: 2026-12-25 (Natividad del Señor) | tipo=Nacional | province=- | locality=-
+DEBUG: Loaded 8 records from source=csv for year=2026 | mode=full
+DEBUG: INCLUDE 2026-01-01 (Año Nuevo)
+DEBUG: INCLUDE 2026-01-06 (Epifanía del Señor)
+DEBUG: EXCLUDE 2026-04-03 (Viernes Santo): Viernes Santo explicitly excluded (not a fixed date)
+DEBUG: INCLUDE 2026-05-01 (Fiesta del Trabajo)
+DEBUG: EXCLUDE 2026-08-15 (Asunción de la Virgen): weekend (SAT)
+DEBUG: INCLUDE 2026-10-12 (Fiesta Nacional de España)
+DEBUG: INCLUDE 2026-12-08 (Inmaculada Concepción)
+DEBUG: INCLUDE 2026-12-25 (Natividad del Señor)
+DEBUG: EXCLUDE 2026-11-01 (Todos los Santos): fixed date falls on weekend (SUN)
+DEBUG: EXCLUDE 2026-12-06 (Día de la Constitución): fixed date falls on weekend (SUN)
+DEBUG: INCLUDE 2027-01-01 (Año Nuevo): next-year fixed date added
+DEBUG: INCLUDE 2027-01-06 (Epifanía del Señor): next-year fixed date added
+DEBUG: Final PVPC holiday list for 2026/2027 (8 entries):
+DEBUG:   2026-01-01 - Año Nuevo
+DEBUG:   2026-01-06 - Epifanía del Señor
+DEBUG:   2026-05-01 - Fiesta del Trabajo
+DEBUG:   2026-10-12 - Fiesta Nacional de España
+DEBUG:   2026-12-08 - Inmaculada Concepción
+DEBUG:   2026-12-25 - Natividad del Señor
+DEBUG:   2027-01-01 - Año Nuevo
+DEBUG:   2027-01-06 - Epifanía del Señor
 INFO: Computed PVPC holidays for 2026/2027 from source=csv | warmup=False | final_count=8
 PVPC P3/valle holidays 2026/2027 (8 entries):
 2026-01-01 - Año Nuevo
@@ -248,38 +248,38 @@ python-holidays source (`--source python-holidays`):
 
 ```text
 INFO: Holiday source selected: python-holidays | year=2026 | mode=full
-INFO: python-holidays holiday found: 2026-01-01 (Año Nuevo)
-INFO: python-holidays holiday found: 2026-01-06 (Epifanía del Señor)
-INFO: python-holidays holiday found: 2026-04-03 (Viernes Santo)
-INFO: python-holidays holiday found: 2026-05-01 (Fiesta del Trabajo)
-INFO: python-holidays holiday found: 2026-08-15 (Asunción de la Virgen)
-INFO: python-holidays holiday found: 2026-10-12 (Fiesta Nacional de España)
-INFO: python-holidays holiday found: 2026-11-01 (Todos los Santos)
-INFO: python-holidays holiday found: 2026-12-06 (Día de la Constitución) | mapped_from=Día de la Constitución Española
-INFO: python-holidays holiday found: 2026-12-08 (Inmaculada Concepción)
-INFO: python-holidays holiday found: 2026-12-25 (Natividad del Señor)
-INFO: Loaded 10 records from source=python-holidays for year=2026 | mode=full
-INFO: INCLUDE 2026-01-01 (Año Nuevo)
-INFO: INCLUDE 2026-01-06 (Epifanía del Señor)
-INFO: EXCLUDE 2026-04-03 (Viernes Santo): Viernes Santo explicitly excluded (not a fixed date)
-INFO: INCLUDE 2026-05-01 (Fiesta del Trabajo)
-INFO: EXCLUDE 2026-08-15 (Asunción de la Virgen): weekend (SAT)
-INFO: INCLUDE 2026-10-12 (Fiesta Nacional de España)
-INFO: INCLUDE 2026-12-08 (Inmaculada Concepción)
-INFO: INCLUDE 2026-12-25 (Natividad del Señor)
-INFO: EXCLUDE 2026-11-01 (Todos los Santos): fixed date falls on weekend (SUN)
-INFO: EXCLUDE 2026-12-06 (Día de la Constitución): fixed date falls on weekend (SUN)
-INFO: INCLUDE 2027-01-01 (Año Nuevo): next-year fixed date added
-INFO: INCLUDE 2027-01-06 (Epifanía del Señor): next-year fixed date added
-INFO: Final PVPC holiday list for 2026/2027 (8 entries):
-INFO:   2026-01-01 - Año Nuevo
-INFO:   2026-01-06 - Epifanía del Señor
-INFO:   2026-05-01 - Fiesta del Trabajo
-INFO:   2026-10-12 - Fiesta Nacional de España
-INFO:   2026-12-08 - Inmaculada Concepción
-INFO:   2026-12-25 - Natividad del Señor
-INFO:   2027-01-01 - Año Nuevo
-INFO:   2027-01-06 - Epifanía del Señor
+DEBUG: python-holidays holiday found: 2026-01-01 (Año Nuevo)
+DEBUG: python-holidays holiday found: 2026-01-06 (Epifanía del Señor)
+DEBUG: python-holidays holiday found: 2026-04-03 (Viernes Santo)
+DEBUG: python-holidays holiday found: 2026-05-01 (Fiesta del Trabajo)
+DEBUG: python-holidays holiday found: 2026-08-15 (Asunción de la Virgen)
+DEBUG: python-holidays holiday found: 2026-10-12 (Fiesta Nacional de España)
+DEBUG: python-holidays holiday found: 2026-11-01 (Todos los Santos)
+DEBUG: python-holidays holiday found: 2026-12-06 (Día de la Constitución) | mapped_from=Día de la Constitución Española
+DEBUG: python-holidays holiday found: 2026-12-08 (Inmaculada Concepción)
+DEBUG: python-holidays holiday found: 2026-12-25 (Natividad del Señor)
+DEBUG: Loaded 10 records from source=python-holidays for year=2026 | mode=full
+DEBUG: INCLUDE 2026-01-01 (Año Nuevo)
+DEBUG: INCLUDE 2026-01-06 (Epifanía del Señor)
+DEBUG: EXCLUDE 2026-04-03 (Viernes Santo): Viernes Santo explicitly excluded (not a fixed date)
+DEBUG: INCLUDE 2026-05-01 (Fiesta del Trabajo)
+DEBUG: EXCLUDE 2026-08-15 (Asunción de la Virgen): weekend (SAT)
+DEBUG: INCLUDE 2026-10-12 (Fiesta Nacional de España)
+DEBUG: INCLUDE 2026-12-08 (Inmaculada Concepción)
+DEBUG: INCLUDE 2026-12-25 (Natividad del Señor)
+DEBUG: EXCLUDE 2026-11-01 (Todos los Santos): fixed date falls on weekend (SUN)
+DEBUG: EXCLUDE 2026-12-06 (Día de la Constitución): fixed date falls on weekend (SUN)
+DEBUG: INCLUDE 2027-01-01 (Año Nuevo): next-year fixed date added
+DEBUG: INCLUDE 2027-01-06 (Epifanía del Señor): next-year fixed date added
+DEBUG: Final PVPC holiday list for 2026/2027 (8 entries):
+DEBUG:   2026-01-01 - Año Nuevo
+DEBUG:   2026-01-06 - Epifanía del Señor
+DEBUG:   2026-05-01 - Fiesta del Trabajo
+DEBUG:   2026-10-12 - Fiesta Nacional de España
+DEBUG:   2026-12-08 - Inmaculada Concepción
+DEBUG:   2026-12-25 - Natividad del Señor
+DEBUG:   2027-01-01 - Año Nuevo
+DEBUG:   2027-01-06 - Epifanía del Señor
 INFO: Computed PVPC holidays for 2026/2027 from source=python-holidays | warmup=False | final_count=8
 PVPC P3/valle holidays 2026/2027 (8 entries):
 2026-01-01 - Año Nuevo
