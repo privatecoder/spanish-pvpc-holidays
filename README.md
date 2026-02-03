@@ -1,12 +1,12 @@
 # spanish-pvpc-holidays
 
-Importable Python package for Spanish holidays that should count as all-day `P3/valle` in the PVPC Peaje 2.0TD tariff.
+Importable Python package for Spanish holidays that should count as all-day `P3/valle` in the PVPC 2.0TD tariff.
 
 ---
 
 ## Regulatory Context (Peaje 2.0 TD)
 
-For the energy price component in Peaje 2.0 TD, a three-period time discrimination applies: `punta`, `llano`, and `valle`.
+For the energy price component in 2.0 TD, a three-period time discrimination applies: `punta`, `llano` and `valle`.
 
 For the power component (`potencia`) in 2.0 TD, only two periods apply: `punta-llano` and `valle`.
 
