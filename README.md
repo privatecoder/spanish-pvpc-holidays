@@ -297,4 +297,3 @@ PVPC P3/valle holidays 2026/2027 (8 entries):
 ## License
 
 MIT License. See the [LICENSE](LICENSE) file.
-Recent changes are listed in [CHANGELOG.md](CHANGELOG.md).
