@@ -37,6 +37,7 @@ Art. 7.4:
 
 1. Download CSV from Seguridad Social.
    - Source endpoint: `https://www.seg-social.es/wps/PA_POINCALAB/CalendarioServlet`
+   - Important: this endpoint returns national holidays for the **current year only**.
 2. Optionally load national holidays from `python-holidays` (`holidays.country_holidays("ES", years=[...])`).
 3. Normalize holiday names so CSV and `python-holidays` variants map to the same canonical names.
 4. Exclude holidays that fall on Saturday/Sunday.
@@ -134,6 +135,9 @@ for day, name in holidays.items():
     print(day, name)
 ```
 
+When using `source="csv"` with the default endpoint, use the server's current year.
+For other years, prefer `source="python-holidays"`.
+
 The returned mapping includes selected holidays for the requested year plus
 next-year `01.01` and `06.01` when those dates are not Saturday/Sunday.
 
@@ -192,9 +196,16 @@ pvpc-holidays --year 2026 --source csv --log-level DEBUG
 Optionally, `--csv-url` can include a `{year}` placeholder.
 To use `python-holidays` as source, set `--source python-holidays`.
 
+Source behavior note:
+- `--source csv` with the default Seguridad Social endpoint returns only the current year from the server.
+- If you request another year with `--source csv`, the downloaded source data still only contains the server's current year.
+- For non-current years, use `--source python-holidays` (or provide a custom `--csv-url` that supports year selection).
+
 ---
 
 ## Sample logs
+
+The CSV example assumes the endpoint's current year is `2026`.
 
 CSV source (`--source csv`):
 
