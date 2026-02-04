@@ -47,7 +47,7 @@ Art. 7.4:
 7. Add the first two fixed holidays for the next year if they do not fall on a weekend:
    - `01.01` Año Nuevo
    - `06.01` Epifanía del Señor
-8. Log all steps, exclusion reasons, and the final list.
+8. Log lifecycle summaries at `INFO`; use `DEBUG` for detailed include/exclude reasons and per-day final list entries.
 
 Name normalization examples:
 - `Epifania del Señor` -> `Epifanía del Señor`
